@@ -4,7 +4,7 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import  {StatusBar} from 'expo-status-bar';
 import {wp, hp} from '../helpers/common';
 import {theme} from "../constants/theme";
-import button from "../components/button";
+import CustomButton from "../components/button";
 import {useRouter} from 'expo-router';
 
 
@@ -22,7 +22,7 @@ const Welcome = () => {
                     <Text style={styles.punchline}>À l'épicentre de la technologie, G-connect IT révolutionne le partage d'informations et de connaissances.</Text>
                 </View>
                 <View style={styles.footer}>
-                  <Button
+                  <CustomButton
                     title="Commencer"
                     buttonStyle={{marginHorizontal: wp(3)}}
                     onPress={()=>router.push('signUp')}

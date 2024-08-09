@@ -12,7 +12,7 @@ const Input= (props) => {
             }
             <TextInput
             style={{flex: 1}}
-            placeholderTextColor={theme.colors.textLight}
+            placeholderTextColor={theme.colors.primaryDark}
             ref={props.inputRef && props.inputRef}
             {...props}/>
 
@@ -30,9 +30,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: theme.radius.sm,
-        backgroundColor: theme.colors.text,
-        borderWidth: 0.4,
+        backgroundColor: theme.colors.white,
+        borderWidth: 0.9,
         borderCurve: 'continuous',
         gap:12,
+        borderColor: theme.colors.primaryDark
     }
 })

@@ -1,4 +1,15 @@
-import {StyleSheet, Button, View, Text, TextInput, Pressable} from "react-native";
+import {
+    StyleSheet,
+    Button,
+    View,
+    Text,
+    TextInput,
+    Pressable,
+    Image,
+    ScrollView,
+    SafeAreaView,
+    Alert
+} from "react-native";
 import React, {useRef, useState} from "react";
 import Icon from "../assets/icons/index";
 import {theme} from "../constants/theme";
@@ -8,6 +19,8 @@ import {useRouter} from 'expo-router';
 import Backbutton from "../components/BackButton";
 import {hp, wp} from "../helpers/common";
 import Input from "../components/input";
+import CustomButton from "../components/button";
+import {supabase} from "../lib/supabase"; // Ensure you import your custom button component
 
 
 
@@ -15,12 +28,24 @@ const login = () => {
     const router = useRouter();
     const emailRef = useRef("");
     const passwordRef = useRef("");
-    const {loading, setLoading} = useState(true);
+    const [loading, setLoading] = useState(true);
+
     const submit =async () => {
         if(!emailRef.current || !passwordRef.current){
             alert('Connexion',"Veuillez remplir tous les champs!");
             return;
         }
+        let email = emailRef.current.trim();
+        let password = passwordRef.current.trim();
+        setLoading(true);
+
+        const {error}=await supabase.auth.signInWithPassword({
+            email,
+            password
+        });
+        console.log('error:',error);
+        if(error){
+            Alert.alert('Connexion',error.message);}
     }
     return(
         <ScreenWrapper bg="white">
@@ -28,11 +53,19 @@ const login = () => {
             <View style={styles.container}>
                 <Backbutton router={router}/>
                 <View>
-                    <Text style={styles.WelcomeText}>Hey</Text>
+                    <Text style={styles.WelcomeTextHead}>G-Connect IT</Text>
+                </View>
+                <SafeAreaView style={styles.containerSafe}>
+                    <ScrollView style={styles.scrollView} Vertical showsVerticalScrollIndicator={false}>
+                        <View>
+                            <Image
+                                style={styles.WelcomeImage} resizeMode='contain' source={require('../assets/images/welcome1.jpg')}/>
+                        </View>
+                <View>
                     <Text style={styles.WelcomeText}>Heureux de vous revoir!!!</Text>
+                    <Text style={{fontSize:hp(1.5), color:theme.colors.text, textAlign:'center'}}>connecter vous pour continuer svp!</Text>
                 </View>
                 <View style={styles.form}>
-                    <Text style={{fontSize:hp(1.5), color:theme.colors.text}}>connecter vous pour continuer svp!</Text>
                     < Input
                         icon={<Icon name="mail" size="26" strokeWidth={1.6} />}
                         placeholder ="Votre mail"
@@ -47,7 +80,8 @@ const login = () => {
                     <Text style={styles.forgotPassword}>
                         mot de passe oublié?
                     </Text>
-                    <Button
+
+                    <CustomButton
                         title="Se connecter"
                         lording={loading}
                         onPress={submit}/>
@@ -58,6 +92,8 @@ const login = () => {
                         </Pressable>
                     </View>
                 </View>
+        </ScrollView>
+</SafeAreaView>
             </View>
         </ScreenWrapper>
     )
@@ -70,21 +106,40 @@ const styles = StyleSheet.create({
         alignSelf:'flex-start',
         padding: 5,
         borderRadius: theme.radius.sm,
-        borderColor: "rgba(0,0,0,0.7)"
+        borderColor: "rgba(0,0,0,0.4)"
     },
     container: {
         flex: 1,
         gap: 5,
         marginHorizontal: wp(4),
     },
-    WelcomeText: {
-        height: hp(4),
-        fontWeight: theme.fonts.semibold,
-        color: theme.colors.text,
+    containerSafe: {
+        flex: 1,
+        paddingTop: wp(4),
+        paddingBottom:12
+    },
+    scrollView:{
+        backgroundColor:'ping',
 
     },
+    WelcomeText: {
+        height: hp(4),
+        fontWeight: theme.fonts.bold,
+        color: theme.colors.blue,
+        textAlign:"center",
+        fontSize: theme.radius.xl,
+    },
+    WelcomeTextHead: {
+        height: hp(4),
+        fontWeight: theme.fonts.bold,
+        color: theme.colors.blue,
+        textAlign:"right",
+        top:-25,
+        fontSize: theme.radius.xl,
+        marginLeft:55
+    },
     form: {
-        gap:25,
+        gap:15,
     },
     forgotPassword: {
         color: theme.colors.primary,
@@ -101,6 +156,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         textAlign: 'center',
         gap: 5
+
+    },
+    WelcomeImage: {
+        width: wp(90),
+        height: hp(30),
+        alignSelf: 'center',
 
     }
 })

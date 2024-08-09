@@ -56,7 +56,7 @@ const Icon = ({name, ...props}) => {
         height={props.size || 24}
         width={props.size || 24}
         strokeWidth={props.strokeWidth || 1.9}
-        color={theme.colors.textLight}
+        color={theme.colors.primaryDark}
         {...props}
     />
   )
