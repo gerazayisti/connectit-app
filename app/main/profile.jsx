@@ -9,7 +9,7 @@ import { hp, wp } from '../../helpers/common';
 import Icon from '../../assets/icons';
 import { supabase } from '../../lib/supabase';
 import Avatar from '../../components/avatar';
-
+import EditProfile from './editProfile';
 
 
 const Profile = () => {
@@ -63,7 +63,7 @@ const UserHeader =({ user, router,handleLogout })=> {
                         rounded={theme.radius.xxl}
                         style={{borderWidth: 2}}  
                     />
-                    <Pressable style={styles.editIcon} onPress={()=>router.push('editProfile')}>
+                    <Pressable style={styles.editIcon} onPress={()=>router.push('./editProfile')}>
                         <Icon name="edit" strockewidth={2.5} size= {20}/>
                     </Pressable>
                     </View>
@@ -83,18 +83,26 @@ const UserHeader =({ user, router,handleLogout })=> {
                             {user && user.email}
                         </Text>
                         </View>
-                        <View style={styles.info}>
+                        {
+                            user && user.phonenumber &&(
+                                <View style={styles.info}>
                             <Icon name='call' size={20} color={theme.colors.textLight} />
                             <Text style={styles.infoText}>
                             {user && user.phonenumber}
                         </Text>
                         </View>
-                        <View style={styles.info}>
+                            )
+                        }
+                        {
+                            user && user.bio && (
+                                <View style={styles.info}>
                             <Icon name='threeDotsHorizontal' size={20} color={theme.colors.textLight} />
                             <Text style={styles.infoText}>
                             {user && user.bio}
                         </Text>
                         </View>
+                            )
+                        }
                     </View>
                 </View>
             </View>

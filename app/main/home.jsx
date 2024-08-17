@@ -14,7 +14,6 @@ import Avatar  from '../../components/avatar'
 const home = () => {
 const {user,setAuth}= useAuth();
 const router= useRouter();
-
 /*const onlogout = async () => {
     setAuth(null);
     const {error} = await supabase.auth.signOut();
