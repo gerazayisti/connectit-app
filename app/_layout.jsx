@@ -19,9 +19,9 @@ const MainLayout = () => {
 
     useEffect(() => {
         supabase.auth.onAuthStateChange((_event, session) => {
-           // console.log('session user:', session?.user?.id);
+          
             
-            if (session) {
+            if (session) { 
                 setAuth(session?.user);
                 updateUserData(session?.user, session?.user?.email);  
                 router.replace('/main/home');
@@ -33,11 +33,11 @@ const MainLayout = () => {
         return;
     },[]);
 
-    const updateUserData = async (user, email,name) => {
+    const updateUserData = async (user, email) => {
         let res = await getUserData(user?.id);
         console.log('user data:', res);
         if(res.success){
-            setUserData(...res.data, email,name);
+            setUserData({...res.data, email});
         }
     }
 

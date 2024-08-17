@@ -9,11 +9,10 @@ import { hp, wp } from '../../helpers/common';
 import Icon from '../../assets/icons';
 import { supabase } from '../../lib/supabase';
 import Avatar from '../../components/avatar';
-import EditProfile from './editProfile';
 
 
 const Profile = () => {
-    const { user,setAuth } = useAuth();
+    const {user,setAuth} = useAuth();
     const router = useRouter();
     const onLogout = async () => {
     setAuth(null);
@@ -40,7 +39,6 @@ const Profile = () => {
         
         <ScreenWrapper bg='white'>
             <UserHeader user={user} router={router} handleLogout={handleLogout}/>
-
         </ScreenWrapper>
     );
 };
@@ -49,31 +47,30 @@ const UserHeader =({ user, router,handleLogout })=> {
     return (
         <View style={{ flex: 1, backgroundColor: 'white', paddingHorizontal: wp(4) }}>
             <View>
-                <Header title="Profile" mb={30} />
+                <Header title="Profile" mb={30}/>
                 <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
                     <Icon name="logout" color='red'></Icon>
                 </TouchableOpacity>
             </View>
             <View style={styles.container}>
-                <View style={{gap:15}}>
+                <View style={{gap:10}}>
                     <View style={styles.avatarContainer}>
                         <Avatar 
                         uri={user?.image}
                         size={hp(12)}
                         rounded={theme.radius.xxl}
                         style={{borderWidth: 2}}  
-                    />
-                    <Pressable style={styles.editIcon} onPress={()=>router.push('./editProfile')}>
-                        <Icon name="edit" strockewidth={2.5} size= {20}/>
-                    </Pressable>
+                        />
+                        <Pressable style={styles.editIcon} onPress={()=>router.push('./editProfile')}>
+                         <Icon name="edit" strockewidth={2.5} size= {20}/>
+                        </Pressable>
                     </View>
-                    {/*info utilisateur*/}
                     < View style={{alignItems:'center', gap:4}}>
                         <Text style={styles.userName}>
-                            {user && user.name}
+                            {user && user?.name} 
                         </Text>
                         <Text style={styles.infoText}>
-                            {user && user.adress}
+                            {user && user?.adress}
                         </Text>
                     </View>
                     <View style={{gap:10}}>
@@ -143,7 +140,7 @@ const styles = StyleSheet.create({
     },
     
     userName:{
-        fontSize:hp(5),
+        fontSize:hp(3),
         color:theme.colors.blue
     },
     info:{
@@ -153,7 +150,8 @@ const styles = StyleSheet.create({
     },
     infoText:{
         fontSize:hp(1.6),
-        color:theme.colors.textLight
+        color:theme.colors.textLight,
+        gap:4,
     },
     logoutButton:{
         position:'absolute',

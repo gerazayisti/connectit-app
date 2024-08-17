@@ -4,7 +4,7 @@ import { theme } from "../constants/theme";
 import { hp } from "../helpers/common";
 import Loading from "./loading";
 
-const button = ({
+const Buttons = ({
                     buttonStyle,
                     textStyle,
                     title = '',
@@ -38,7 +38,7 @@ const button = ({
     );
 };
 
-export default button;
+export default Buttons;
 
 const styles = StyleSheet.create({
     button: {
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
         borderRadius: theme.radius.xxl,
     },
     text: {
-        color: theme.colors.white,
+        color: '#ffffff',
         fontSize: hp(2.5),
         fontWeight: theme.fonts.bold,
     },

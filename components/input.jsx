@@ -6,7 +6,7 @@ import {hp, wp} from "../helpers/common";
 
 const Input= (props) => {
     return(
-        <View style={[styles.container, props.container && props.containerStyle]}>
+        <View style={[styles.container, props.containerStyle && props.containerStyle]}>
             {
                 props.icon && props.icon
             }
@@ -14,7 +14,8 @@ const Input= (props) => {
             style={{flex: 1}}
             placeholderTextColor={theme.colors.primaryDark}
             ref={props.inputRef && props.inputRef}
-            {...props}/>
+            {...props}
+            />
 
         </View>
     )
@@ -26,14 +27,15 @@ export default Input
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        height:hp(7.5),
+        height:hp(7.2),
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: theme.radius.sm,
         backgroundColor: theme.colors.white,
-        borderWidth: 0.9,
+        borderWidth: 0.4,
         borderCurve: 'continuous',
         gap:12,
-        borderColor: theme.colors.primaryDark
-    }
+        borderColor: theme.colors.primaryDark,
+        paddingHorizontal:15
+        }
 })
