@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     color:theme.colors.textLight
   }, 
   textEditor:{
-    //marginTop: 10,
+    marginTop: 10,
   },
 
   media:{
