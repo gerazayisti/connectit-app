@@ -1,6 +1,5 @@
 import {StyleSheet, View, Text, TextInput} from "react-native";
 import React from "react";
-import {Stack} from "expo-router";
 import {theme} from "../constants/theme";
 import {hp, wp} from "../helpers/common";
 

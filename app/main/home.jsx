@@ -1,19 +1,37 @@
-import { Alert, Pressable, StyleSheet, Text, View, ViewBase } from 'react-native'
-import React from 'react'
+import { Alert, FlatList, Pressable, StyleSheet, Text, View, ViewBase } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import {Button} from 'react-native-elements'
 import { useAuth } from '../../contexts/AuthContext'
 import { supabase } from '../../lib/supabase'
 import { theme } from '../../constants/theme'
 import { hp, wp } from '../../helpers/common'
-import Icon from "../../assets/icons/index";
+import Icon from "../../assets/icons";
 import { useRouter } from 'expo-router'
 import Avatar  from '../../components/avatar'
+import { fetchPost } from '../../services/postService'
+import PostCard from '../../components/PostCard'
 
-
+var limit=0;
 const home = () => {
 const {user,setAuth}= useAuth();
 const router= useRouter();
+const [post,setPost]=useState([]);
+
+  useEffect(() => {
+    getPost();
+  },[])
+
+  const getPost = async () => {
+    limit=limit+10;
+    //appel de l'api pour recuperer les post
+    //console.log('fetching Poost: ',limit);
+     let res= await fetchPost();
+    if(res.success){
+      setPost(res.data);
+    }
+  }
+
 /*const onlogout = async () => {
     setAuth(null);
     const {error} = await supabase.auth.signOut();
@@ -46,8 +64,19 @@ const router= useRouter();
             </Pressable>
             </View>
           </View>
-        <Text>home</Text>
-       { /*<Button title="logout" onPress={onlogout} />*/}
+        <FlatList
+          data={post}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.liststyle}
+          keyExtractor={item=>item.id.toString()}
+          renderItem={({item})=><PostCard
+          item={item}
+          currentUser={user}
+          router={router}
+          />  
+        } 
+
+          />
       </View>
     </ScreenWrapper>
   )
@@ -133,5 +162,25 @@ const styles = StyleSheet.create({
         width: wp(90),
         height: hp(30),
         alignSelf: 'center',
+    },
+    liststyle:{
+      paddingTop:20,
+      paddingHorizontal:wp(4)
+    },
+    noPost:{
+      fontSize:hp(2),
+      textAlign:'center',
+      color:theme.colors.text
+    },
+    pill:{
+      position:'absolute',
+      right:-20,
+      top:-4,
+      height:hp(2.2),
+      width:hp(2.2),
+      justifyContent:'center',
+      alignContent:'center',
+      borderRadius:20,
+      backgroundColor:theme.colors.blueLight
     }
 })

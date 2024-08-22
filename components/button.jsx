@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
         height: hp(7.6),
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: theme.radius.xxl,
+        borderRadius: theme.radius.xl,
     },
     text: {
         color: '#ffffff',

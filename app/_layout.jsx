@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { LogBox, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect } from 'react';
 import { Stack, useRouter } from 'expo-router';
 import { AuthProvider, useAuth } from '../contexts/AuthContext';
@@ -12,6 +12,8 @@ const _layout = () => {
         </AuthProvider>
     );
 }
+
+LogBox.ignoreLogs(['Warning:TNodeChildrenRenderer','Warning: MemorizedNodeRenderer','Warning:TRenderEngineProvider'])
 
 const MainLayout = () => {
     const { setAuth, setUserData} = useAuth();
@@ -35,7 +37,7 @@ const MainLayout = () => {
 
     const updateUserData = async (user, email) => {
         let res = await getUserData(user?.id);
-        console.log('user data:', res);
+        //console.log('user data:', res);
         if(res.success){
             setUserData({...res.data, email});
         }
