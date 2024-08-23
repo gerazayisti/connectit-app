@@ -6,6 +6,7 @@ import { supabaseUrl } from '../constants'
 export const getUserImageSrc= imagePath=>{
     if (imagePath){
         return getSupabaseFileUrl(imagePath)
+    
     }else{
         return require('../assets/images/defaultUser.png')
     }
@@ -16,6 +17,20 @@ export const getSupabaseFileUrl= filePath =>{
         return {uri:`${supabaseUrl}/storage/v1/object/public/uploads/${filePath}`}
     }
     return null;
+}
+
+export const downloadFile = async(uri)=>{
+    try {
+        const {uri}= await FileSystem.downloadAsync(url,getLocalFilePath(url));
+        return uri;
+    } catch (error) {
+        return null;
+    }
+}
+
+export const getLocalFilePath = (url)=>{
+    let fileName=filePath.Split('/').pop();
+    return `${FileSystem.cacheDirectory}${fileName}`;
 }
 
 export const uploadFile = async(folderName, fileUri, isimage=true)=>{

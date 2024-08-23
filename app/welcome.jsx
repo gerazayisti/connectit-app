@@ -25,13 +25,13 @@ const Welcome = () => {
                   <CustomButton
                     title="Commencer"
                     buttonStyle={{marginHorizontal: wp(3)}}
-                    onPress={()=>router.push('signUp')}
+                    onPress={()=>router.push('login')}
                   />
                 </View>
                 <View style={styles.bottomTextContainer}>
-                    <Text style={styles.loginText}>Vous avez déjà un compte ?</Text>
-                    <Pressable onPress={()=>router.push('login')}>
-                        <Text style={[styles.loginText, {color: theme.colors.primaryDark, fontWeight:theme.fonts.semibold}]}>Se Connecter</Text>
+                    <Text style={styles.loginText}>Vous n'avez pas de compte ?</Text>
+                    <Pressable onPress={()=>router.push('signUp')}>
+                        <Text style={[styles.loginText, {color: theme.colors.primaryDark, fontWeight:theme.fonts.semibold}]}>Inscrivez vous ici</Text>
                     </Pressable>
                 </View>
             </View>

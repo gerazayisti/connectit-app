@@ -14,3 +14,7 @@ export const wp= percentage=>{
         percentage*deviceWidth
     )/100;
 }
+
+export const stripHtmlTags=(html)=>{
+    return html.replace(/<[^>]*>?/gm, '');
+}

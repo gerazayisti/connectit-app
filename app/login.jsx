@@ -21,6 +21,7 @@ import {hp, wp} from "../helpers/common";
 import Input from "../components/input";
 import CustomButton from "../components/button";
 import {supabase} from "../lib/supabase"; // Ensure you import your custom button component
+import Loading from "../components/loading";
 
 
 
@@ -83,7 +84,7 @@ const login = () => {
 
                     <CustomButton
                         title="Se connecter"
-                        lording={loading}
+                        lording={Loading}
                         onPress={submit}/>
                     <View style={styles.footer}>
                         <Text style={styles.footerText}>Vous n'avez pas de compte?</Text>

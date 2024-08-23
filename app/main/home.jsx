@@ -11,23 +11,45 @@ import { useRouter } from 'expo-router'
 import Avatar  from '../../components/avatar'
 import { fetchPost } from '../../services/postService'
 import PostCard from '../../components/PostCard'
+import Loading from '../../components/loading'
+import { getUserData } from '../../services/userService'
 
 var limit=0;
 const home = () => {
 const {user,setAuth}= useAuth();
 const router= useRouter();
 const [post,setPost]=useState([]);
+const [hasMore,setHasMore]=useState(true);
+
+const handlePostEvent = async (payload) => {
+  if(payload.eventType == 'INSERT' && payload?.new?.id){
+    let newPost= {...payload.new};
+    let res = await getUserData(newPost.userId);
+    newPost.user=res.success? res.data: {};
+    setPost(prevPost=>[newPost,...prevPost]);
+  }
+}
 
   useEffect(() => {
-    getPost();
+    let postchannel = supabase
+    .channel('post')
+    .on('postgres_changes',{event:'*', schema: 'public', table: 'post'},handlePostEvent)
+    .subscribe();
+    //getPost();
+
+    return () => {
+      supabase.removeChannel(postchannel);
+    }
   },[])
 
   const getPost = async () => {
-    limit=limit+10;
+    if(!hasMore) return null;
+    limit=limit+4;
     //appel de l'api pour recuperer les post
-    //console.log('fetching Poost: ',limit);
-     let res= await fetchPost();
+    console.log('fetching Poost: ',limit);
+     let res= await fetchPost(limit);
     if(res.success){
+      if(post.length==res.data.length) setHasMore(false);
       setPost(res.data);
     }
   }
@@ -75,7 +97,18 @@ const [post,setPost]=useState([]);
           router={router}
           />  
         } 
-
+        onEndReached={()=>{
+          getPost();
+          console.log('go to the ends')
+        }}
+        onEndReachedThreshold={0}
+        ListFooterComponent={hasMore?(
+          <View style={{marginVertical:post.length==0? 200:30}}>  
+            <Loading/>
+          </View>
+        ):(<View style={{marginVertical:post.length==0? 200:30}}> 
+          <Text style={styles.noPost}>Vous avez consulté(e) tous les Posts</Text>
+          </View>)}
           />
       </View>
     </ScreenWrapper>

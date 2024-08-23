@@ -1,13 +1,17 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { theme } from '../constants/theme'
-import { hp,wp } from '../helpers/common'
+import { hp,stripHtmlTags,wp } from '../helpers/common'
 import Avatar from './avatar'
 import moment from 'moment'
 import Icon from '../assets/icons/index'
 import RenderHtml from 'react-native-render-html';
 import { Image } from 'expo-image'
-import { getSupabaseFileUrl } from '../services/imageService'
+import { downloadFile, getSupabaseFileUrl } from '../services/imageService'
+import { Video } from 'expo-av'
+import { createPostLike, removePostLike } from '../services/postService'
+
+
 
 const PostCard = ({
     item,
@@ -24,12 +28,50 @@ const PostCard = ({
         shadowRaduis:6,
         elevation:1
     }
+    const onShare=async ()=>{
+        let content= {message: stripHtmlTags(item?.body) };
+        if(item?.file){
+            let url = await downloadFile(getSupabaseFileUrl( item?.file).uri);
+            content.url= url;
+        }
+        Share.share(content);
+    }
+    const onLike=async ()=>{
+
+        if(liked){
+            let updatedLikes= likes.filter(like=>like.userId!=currentUser?.id);
+            setLiked([...updatedLikes]);
+            let res = removePostLike(item?.id, currentUser?.id);
+            console.log('remove like post: ',res);
+            if(!res.success){
+                Alert.alert('Post', 'impossible de liker le post');
+            } 
+        }else{
+            let data = {
+                userId: currentUser?.id,
+                postId: item?.id
+            }
+            setLiked([...likes, data]);
+            let res = await createPostLike(data);
+            console.log('like post: ',res);
+            if(!res.success){
+                Alert.alert('Post', 'impossible de liker le post');
+            }   
+        }
+
+    }
+
+    const [likes, setLiked]=useState([]);
+
+    useEffect(() => {
+        setLiked(item?.postLikes);
+    }, [])
     const onpenPostDetails=()=>{
         //prochainement
     }
     const createdAt = moment(item?.created_at).format('D MMMM')
     const createdAttime = moment(item?.created_at).format('hh:mm')
-
+    const liked =likes.filter(like=>like.userId==currentUser?.id)[0]? true:false;
   return (
     <View style={[styles.container, hasShadow && shadowStyles] }>
       <View style={[styles.header]}> 
@@ -76,6 +118,45 @@ const PostCard = ({
                 />
             )
         }
+        {
+            item?.file && item?.file?.includes('PostVideo') && (
+                <Video
+                source={getSupabaseFileUrl(item?.file)}
+                useNativeControls
+                style={[styles.postmedia,{height:hp(30)}]}
+                resizeMode='cover'
+                isLooping
+                />
+            )
+        }
+
+      </View>
+      <View style={styles.footer}>
+        <View style={styles.footerButton}>
+            <TouchableOpacity onPress={onLike}>
+                <Icon name="heart" size={hp(2.5)} fill={liked? theme.colors.blue:'transparent'} color={liked? theme.colors.blue : theme.colors.textLight}/>
+            </TouchableOpacity>
+            <Text style={styles.count}>
+                {likes?.length}
+            </Text>
+            
+        </View>
+        <View style={styles.footerButton}>
+            <TouchableOpacity>
+                <Icon name="comment" size={hp(2.5)} color={theme.colors.blue}/>
+            </TouchableOpacity>
+            <Text style={styles.count}>
+                0
+            </Text>
+        </View>
+        <View style={styles.footerButton}>
+            <TouchableOpacity onPress={onShare}>
+                <Icon name="send" size={hp(2.5)} color={theme.colors.blue}/>
+            </TouchableOpacity>
+            <Text style={styles.count}>
+                0
+            </Text>
+        </View>
       </View>
     </View>
   )
@@ -135,6 +216,7 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         alignItems:'center',
         gap:18,
+        marginLeft:10
     },
     footerButton:{
         marginLeft:5,

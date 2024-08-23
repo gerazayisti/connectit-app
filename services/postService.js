@@ -38,7 +38,8 @@ export const fetchPost=async(limit=10)=>{
         .from ('post')
         .select(`
         *,
-        user:users (id, name, image)
+        user:users (id, name, image),
+        postLikes (*)
     `)
         .order('created_at',{ascending:false})
         .limit(limit);
@@ -52,5 +53,47 @@ export const fetchPost=async(limit=10)=>{
     } catch (error) {
         console.log("fetchpost error: ", error)
         return{success:false, msg:"imposte de colleter les post"};
+    }
+}
+
+
+export const createPostLike=async(postLikes)=>{
+    try {
+        const {data, error}=await supabase
+        .from('postLikes')
+        .insert(postLikes)
+        .select()
+        .single();
+
+        if(error){
+            console.log("PostLike error: ", error)
+            return{success:false, msg:"imposte d'aimer le post"};
+        }
+
+        return{success:true, data};
+    } catch (error) {
+        console.log("PostLike error: ", error)
+        return{success:false, msg:"impossible d'aimer le post"};
+    }
+}
+
+export const removePostLike=async(postId, userId)=>{
+    try {
+        const {error}=await supabase
+        .from('postLikes')
+        .delete()
+        .eq('userId', userId)
+        .eq('postId', postId)
+        
+
+        if(error){
+            console.log(" remove PostLike error: ", error)
+            return{success:false, msg:"imposte de supprimer le like du post"};
+        }
+
+        return{success:true};
+    } catch (error) {
+        console.log("PostLike error: ", error)
+        return{success:false, msg:"imposte de supprimer le like du post"};
     }
 }
