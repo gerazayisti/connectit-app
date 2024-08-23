@@ -1,4 +1,4 @@
-import { Alert, FlatList, Pressable, StyleSheet, Text, View, ViewBase } from 'react-native'
+import { Alert, FlatList, Image, Pressable, StyleSheet, Text, View, ViewBase } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
 import {Button} from 'react-native-elements'
@@ -13,13 +13,31 @@ import { fetchPost } from '../../services/postService'
 import PostCard from '../../components/PostCard'
 import Loading from '../../components/loading'
 import { getUserData } from '../../services/userService'
-
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import FloatingActionButton from '../../components/floatingBouton'
+ 
 var limit=0;
 const home = () => {
 const {user,setAuth}= useAuth();
 const router= useRouter();
 const [post,setPost]=useState([]);
 const [hasMore,setHasMore]=useState(true);
+
+const actions = [
+    {
+      icon: <Image source={require('../../assets/images/bot.png')} style={styles.buttonImage} resizeMethod='contain' />,
+      onPress: () =>router.push('../chat/chatBotScreen')
+    },
+    {
+      icon: <MaterialIcons name="forum" size={28} color="white" />,
+      onPress: () => alert('Forum')
+    },
+    {
+      icon: <MaterialIcons name="post-add" size={24} color="white" />,
+      onPress: () => router.push('./newpost')
+    }
+    
+  ];
 
 const handlePostEvent = async (payload) => {
   if(payload.eventType == 'INSERT' && payload?.new?.id){
@@ -72,9 +90,6 @@ const handlePostEvent = async (payload) => {
             <Pressable onPress={()=> router.push('./notifications')}>
               <Icon name="heart" size={hp(3,5)} type="font-awesome" color={theme.colors.blue} strokeWith={2} />
             </Pressable >
-            <Pressable onPress={()=> router.push('./newpost')}>
-              <Icon name="plus" size={hp(3,5)} type="font-awesome" color={theme.colors.blue} strokeWith={2} />
-            </Pressable>
             <Pressable  onPress={()=> router.push('./profile')}>
               <Avatar  
               uri={user?.image}
@@ -111,7 +126,12 @@ const handlePostEvent = async (payload) => {
           </View>)}
           />
       </View>
+      <View>
+        <FloatingActionButton actions={actions} />
+
+      </View>
     </ScreenWrapper>
+
   )
 }
 
@@ -163,6 +183,10 @@ const styles = StyleSheet.create({
         alignItems:'center',
         gap: 18,  
     },
+    buttonImage: {
+    width: hp(3.5),
+    height: hp(3.5),
+  },
     WelcomeTextHead: {
         height: hp(4),
         fontWeight: theme.fonts.bold,

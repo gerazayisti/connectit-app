@@ -51,6 +51,7 @@ const PostCard = ({
                 userId: currentUser?.id,
                 postId: item?.id
             }
+            
             setLiked([...likes, data]);
             let res = await createPostLike(data);
             console.log('like post: ',res);
@@ -69,9 +70,11 @@ const PostCard = ({
     const onpenPostDetails=()=>{
         //prochainement
     }
+
+
     const createdAt = moment(item?.created_at).format('D MMMM')
     const createdAttime = moment(item?.created_at).format('hh:mm')
-    const liked =likes.filter(like=>like.userId==currentUser?.id)[0]? true:false;
+    const liked =likes.filter(likes=>likes.userId==currentUser?.id)[0]? true:false;
   return (
     <View style={[styles.container, hasShadow && shadowStyles] }>
       <View style={[styles.header]}> 
