@@ -10,6 +10,7 @@ import { Image } from 'expo-image'
 import { downloadFile, getSupabaseFileUrl } from '../services/imageService'
 import { Video } from 'expo-av'
 import { createPostLike, removePostLike } from '../services/postService'
+import Loading from './loading'
 
 
 
@@ -19,6 +20,8 @@ const PostCard = ({
     router,
     hasShadow=true,
 }) => {
+    const [likes, setLiked]=useState([]);
+    const [loading, setLoading]=useState(false)
     const shadowStyles={
         shadowOffset:{
             width:0,
@@ -31,7 +34,9 @@ const PostCard = ({
     const onShare=async ()=>{
         let content= {message: stripHtmlTags(item?.body) };
         if(item?.file){
-            let url = await downloadFile(getSupabaseFileUrl( item?.file).uri);
+            setLoading(true);
+            let url= await downloadFile(getSupabaseFileUrl( item?.file).uri);
+            setLoading(false);
             content.url= url;
         }
         Share.share(content);
@@ -53,6 +58,7 @@ const PostCard = ({
             }
             
             setLiked([...likes, data]);
+            
             let res = await createPostLike(data);
             console.log('like post: ',res);
             if(!res.success){
@@ -62,13 +68,13 @@ const PostCard = ({
 
     }
 
-    const [likes, setLiked]=useState([]);
-
     useEffect(() => {
         setLiked(item?.postLikes);
     }, [])
-    const onpenPostDetails=()=>{
-        //prochainement
+
+    const openPostDetails=()=>{
+        
+        router.push({pathname:'postdetails', params:{postId:item?.id}})
     }
 
 
@@ -94,7 +100,7 @@ const PostCard = ({
                 </View>
             </View>
             <View>
-                <TouchableOpacity onPress={onpenPostDetails()}>
+                <TouchableOpacity onPress={openPostDetails}>
                     <Icon name="threeDotsHorizontal" size={hp(3.4)}  strokeWidth={3} color={theme.colors.text}/>
                 </TouchableOpacity>
             </View>
@@ -145,7 +151,7 @@ const PostCard = ({
             
         </View>
         <View style={styles.footerButton}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={openPostDetails}>
                 <Icon name="comment" size={hp(2.5)} color={theme.colors.blue}/>
             </TouchableOpacity>
             <Text style={styles.count}>
@@ -153,12 +159,16 @@ const PostCard = ({
             </Text>
         </View>
         <View style={styles.footerButton}>
-            <TouchableOpacity onPress={onShare}>
+            {
+                loading? (
+                <Loading size="small"/>
+            ):(
+                <TouchableOpacity onPress={onShare}>
                 <Icon name="send" size={hp(2.5)} color={theme.colors.blue}/>
             </TouchableOpacity>
-            <Text style={styles.count}>
-                0
-            </Text>
+                )
+            }
+            
         </View>
       </View>
     </View>

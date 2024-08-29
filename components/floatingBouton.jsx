@@ -1,7 +1,7 @@
 // FloatingActionButton.js
 import React, { useState, useRef } from 'react';
 import { View, TouchableOpacity, StyleSheet, Animated } from 'react-native';
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { AntDesign} from '@expo/vector-icons';
 
 const FloatingActionButton = ({ actions }) => {
   const [isExpanded, setIsExpanded] = useState(false);
