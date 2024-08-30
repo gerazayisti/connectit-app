@@ -39,7 +39,8 @@ export const fetchPost=async(limit=10)=>{
         .select(`
         *,
         user:users (id, name, image),
-        postLikes (*)
+        postLikes (*),
+        comments (count)
     `)
         .order('created_at',{ascending:false})
         .limit(limit);
@@ -95,5 +96,51 @@ export const removePostLike=async(postId, userId)=>{
     } catch (error) {
         console.log("PostLike error: ", error)
         return{success:false, msg:"imposte de supprimer le like du post"};
+    }
+}
+
+export const fetchPostDetails=async(postId)=>{
+    try {
+        const {data,error}=await supabase
+        .from ('post')
+        .select(`
+        *,
+        user:users (id, name, image),
+        postLikes (*),
+        comments (*, user: users(id, name, image))
+    `)
+        .eq('id', postId)
+        .order("created_at", {ascending: false, foreingTable:'comments'})
+        .single();
+
+        if(error){
+            console.log("fetchPostDetail error: ", error)
+            return{success:false, msg:"imposte de colleter les post"};
+        }
+
+        return{success:true, data};
+    } catch (error) {
+        console.log("fetchPostDetails error: ", error)
+        return{success:false, msg:"imposte de colleter les post"};
+    }
+}
+
+export const createComment=async(comment)=>{
+    try {
+        const {data, error}=await supabase
+        .from('comments')
+        .insert(comment)
+        .select()
+        .single();
+
+        if(error){
+            console.log("comment error: ", error)
+            return{success:false, msg:"imposte de commenter le post"};
+        }
+
+        return{success:true, data};
+    } catch (error) {
+        console.log("comment error: ", error)
+        return{success:false, msg:"impossible dde commenter le post"};
     }
 }

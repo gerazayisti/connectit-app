@@ -4,11 +4,11 @@
     "slug": "connectit-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logoplash.png",
+    "icon": "./assets/images/logoplash.jpg",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/logoplash.png",
+      "image": "./assets/images/logoplash.jpg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/logo-gc.png",
+        "foregroundImage": "./assets/images/logoplash.jpg",
         "backgroundColor": "#ffffff"
       },
       "package": "com.gerazayis.connectitapp"
@@ -25,7 +25,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/logoplash.png"
+      "favicon": "./assets/images/logoplash.ico"
     },
     "plugins": [
       "expo-router"

@@ -11,6 +11,7 @@ import { downloadFile, getSupabaseFileUrl } from '../services/imageService'
 import { Video } from 'expo-av'
 import { createPostLike, removePostLike } from '../services/postService'
 import Loading from './loading'
+import { LogBox } from 'react-native';
 
 
 
@@ -19,7 +20,13 @@ const PostCard = ({
     currentUser,
     router,
     hasShadow=true,
+    showMoreIcon=true
 }) => {
+    LogBox.ignoreLogs([
+  'Warning: TRenderEngineProvider: Support for defaultProps will be removed from function components in a future major release.',
+  'Warning: MemoizedTNodeRenderer: Support for defaultProps will be removed from memo components in a future major release.',
+  'Warning: TNodeChildrenRenderer: Support for defaultProps will be removed from function components in a future major release.',
+]);
     const [likes, setLiked]=useState([]);
     const [loading, setLoading]=useState(false)
     const shadowStyles={
@@ -73,10 +80,9 @@ const PostCard = ({
     }, [])
 
     const openPostDetails=()=>{
-        
-        router.push({pathname:'postdetails', params:{postId:item?.id}})
+        if(!showMoreIcon)return null;
+        router.push({pathname:'postDetails', params:{postId:item?.id}})
     }
-
 
     const createdAt = moment(item?.created_at).format('D MMMM')
     const createdAttime = moment(item?.created_at).format('hh:mm')
@@ -100,9 +106,14 @@ const PostCard = ({
                 </View>
             </View>
             <View>
-                <TouchableOpacity onPress={openPostDetails}>
-                    <Icon name="threeDotsHorizontal" size={hp(3.4)}  strokeWidth={3} color={theme.colors.text}/>
-                </TouchableOpacity>
+                {
+                    showMoreIcon && (
+                    <TouchableOpacity onPress={openPostDetails}>
+                        <Icon name="threeDotsHorizontal" size={hp(3.4)}  strokeWidth={3} color={theme.colors.text}/>
+                    </TouchableOpacity>    
+                    )
+                }
+                
             </View>
       </View>
       <View style={styles.content}>
@@ -151,11 +162,14 @@ const PostCard = ({
             
         </View>
         <View style={styles.footerButton}>
+            
             <TouchableOpacity onPress={openPostDetails}>
                 <Icon name="comment" size={hp(2.5)} color={theme.colors.blue}/>
             </TouchableOpacity>
             <Text style={styles.count}>
-                0
+                {
+                    item?.comments[0]?.count
+                }
             </Text>
         </View>
         <View style={styles.footerButton}>
@@ -164,7 +178,7 @@ const PostCard = ({
                 <Loading size="small"/>
             ):(
                 <TouchableOpacity onPress={onShare}>
-                <Icon name="send" size={hp(2.5)} color={theme.colors.blue}/>
+                <Icon name="share" size={hp(2.5)} color={theme.colors.blue}/>
             </TouchableOpacity>
                 )
             }
