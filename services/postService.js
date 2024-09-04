@@ -144,3 +144,23 @@ export const createComment=async(comment)=>{
         return{success:false, msg:"impossible dde commenter le post"};
     }
 }
+
+export const removeComment=async(commentId)=>{
+    try {
+        const {error}=await supabase
+        .from('comments')
+        .delete()
+        .eq('id', commentId)
+        
+
+        if(error){
+            console.log(" remove comment error: ", error)
+            return{success:false, msg:"imposible de supprimer le commentaire"};
+        }
+
+        return{success:true, data:{commentId}};
+    } catch (error) {
+        console.log("commentRemove error: ", error)
+        return{success:false, msg:"imposte de supprimer le commentaire du post"};
+    }
+}

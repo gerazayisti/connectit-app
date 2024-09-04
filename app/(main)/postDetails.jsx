@@ -1,7 +1,7 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { createComment, fetchPostDetails } from '../../services/postService';
+import { createComment, fetchPostDetails, removeComment } from '../../services/postService';
 import { theme } from '../../constants/theme';
 import { hp,wp } from '../../helpers/common';
 import PostCard from '../../components/PostCard';
@@ -10,6 +10,9 @@ import Loading from '../../components/loading';
 import Input from '../../components/input'
 import Icon from '../../assets/icons';
 import CommentItem from '../../components/commentItem';
+import { supabase } from '../../lib/supabase';
+import { getUserData } from '../../services/userService';
+import { set } from 'ramda';
 
 const PostDetails = () => {
   const {postId}= useLocalSearchParams();
@@ -20,10 +23,45 @@ const PostDetails = () => {
   const inputRef=useRef(null);
   const commentRef=useRef("");
   const [loading,setLoading]=useState(false)
-
-  useEffect(()=>{
+  const onDeleteComment= async (comment)=>{
+    console.log('suppression du  commentaire', comment);
+    const res = await removeComment(comment.id);
+    if(res.success){
+      setPost(prevPost=>{
+        let updatedPost={...prevPost};
+        updatedPost.comments= updatedPost.comments.filter(c=>c.id!=comment.id);
+        return updatedPost;
+      })
+    }
+  }
+  const handleNewComment=async (payload)=>{
+    if(payload){
+      let NewComment = {...payload.new};
+      let res= await getUserData(NewComment.userId);
+      NewComment.user=res.success? res.data:{};
+      setPost(prevPost=>{
+        return{
+          ...prevPost,
+          comment:[NewComment, ...prevPost.comment]
+        }
+    })
+  }
+}
+  useEffect(() => {
+    let commentchannel = supabase
+    .channel('comments')
+    .on('postgres_changes',{
+      event:'INSERT',
+       schema: 'public',
+        table: 'comments',
+        filter:`postId=iq.${postId}`
+      },handleNewComment)
+    .subscribe();
     getPostDetails();
-  },[]);
+    return () => {
+      supabase.removeChannel(commentchannel);
+    }
+  },[])
   const onNewComment=async ()=>{
     if(!commentRef.current) return null;
     let data={
@@ -106,7 +144,8 @@ const PostDetails = () => {
               <CommentItem
               key={comment?.id?.toString()}
               item={comment}
-              
+              onDelete={onDeleteComment}
+              canDelete ={ user.id==comment.userId || user.id==post.userId }
               />
             )
           }

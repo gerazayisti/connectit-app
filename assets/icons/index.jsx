@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import HomeICO from './Home';
+import HomeICO from './home';
 import Mail from './Mail';
 import Lock from './Lock';
 import User from './User';
@@ -16,7 +16,7 @@ import ArrowLeft from './ArrowLeft';
 import ThreeDotsCircle from './ThreeDotsCircle';
 import ThreeDotsHorizontal from './ThreeDotsHorizontal';
 import Comment from './Comment';
-import Share from './Share';
+import Share from './share';
 import Send from './Send';
 import Delete from './Delete';
 import Logout from './logout';

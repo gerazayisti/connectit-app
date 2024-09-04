@@ -1,7 +1,6 @@
 import { Alert, FlatList, Image, Pressable, StyleSheet, Text, View, ViewBase } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import ScreenWrapper from '../../components/ScreenWrapper'
-import {Button} from 'react-native-elements'
 import { useAuth } from '../../contexts/AuthContext'
 import { supabase } from '../../lib/supabase'
 import { theme } from '../../constants/theme'
@@ -13,7 +12,7 @@ import { fetchPost } from '../../services/postService'
 import PostCard from '../../components/PostCard'
 import Loading from '../../components/loading'
 import { getUserData } from '../../services/userService'
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import FloatingActionButton from '../../components/floatingBouton'
  
 var limit=0;

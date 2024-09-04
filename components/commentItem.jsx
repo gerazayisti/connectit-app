@@ -8,9 +8,22 @@ import Icon from '../assets/icons'
 
 const CommentItem = ({
     item,
-    canDelete=false
+    canDelete=false,
+    onDelete=()=>{}
 }) => {
     const createdAt= moment(item?.created_at).format('MMM d');
+    const handleDelete=()=>{
+        Alert.alert("confirmer","suprimer le commentaire", [{
+            text:'non',
+            onPress:()=>console.log('modal canceled'),
+            style:'cancel'
+    },
+    {
+            text: 'oui',
+            onPress: () =>onDelete(),
+            style: 'destructive'
+    }])
+    }
   return (
     <View style={styles.container}>
         <Avatar 
@@ -33,7 +46,7 @@ const CommentItem = ({
                 </View>
                 {
                     canDelete && (
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={onDelete}>
                             <Icon name="delete" size={20} color={'red'}/>
                         </TouchableOpacity>        
                     )
